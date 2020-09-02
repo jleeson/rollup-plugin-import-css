@@ -5,7 +5,7 @@ import path from "path";
 
 export default (options = {}) => {
 
-    if(!options.transform) options.transform = code => code;
+    if (!options.transform) options.transform = code => code;
 
     const styles = [];
     const include = ["**/*.css"].concat(options.include || []);
@@ -24,10 +24,12 @@ export default (options = {}) => {
         transform(code, id) {
             if (!filter(id)) return;
 
-            styles[id] = options.transform(code);
+            const transformedCode = (options.minify) ? minifyCSS(options.transform(code)) : options.transform(code);
+
+            styles[id] = transformedCode;
 
             return {
-                code: `export default ${JSON.stringify(options.transform(code))};`,
+                code: `export default ${JSON.stringify(transformedCode)};`,
                 map: { mappings: "" }
             };
         },
@@ -42,15 +44,26 @@ export default (options = {}) => {
                     .map(entry => {
                         /* remove files that were assigned a variable */
                         const cssFile = bundle[file].modules[entry[0]];
-                        if(cssFile.renderedLength <= 0 && cssFile.removedExports.includes("default")) {
+                        if (cssFile.renderedLength <= 0 && cssFile.removedExports.includes("default")) {
                             return entry[1];
                         }
                     })
-                    .join("\n");
-                
+                    .join("\n").substring(1);
+
                 /* write the css content to a file */
                 fs.writeFileSync(options.output || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css"), css);
             }
         }
     };
 };
+
+/* minify css */
+function minifyCSS(content) {
+    content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, "");
+    content = content.replace(/ {2,}/g, " ");
+    content = content.replace(/ ([{:}]) /g, "$1");
+    content = content.replace( /([{:}]) /g, "$1");
+    content = content.replace(/([;,]) /g, "$1");
+    content = content.replace(/ !/g, "!");
+    return content;
+}

@@ -60,6 +60,12 @@ Default: `null`
 
 The transform functin is used for processing the CSS, it receives a string containing the code to process as an argument. The function should return a string.
 
+### minify
+
+Type: `boolean`
+Default: `false`
+
+Minifies the css being imported.
 ---
 
 ## Why
