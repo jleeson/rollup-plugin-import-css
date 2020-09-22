@@ -6,6 +6,8 @@ import path from "path";
 export default (options = {}) => {
 
     if (!options.transform) options.transform = code => code;
+    
+    const alwaysOutput = options.alwaysOutput || false;
 
     const styles = [];
     const include = ["**/*.css"].concat(options.include || []);
@@ -48,7 +50,9 @@ export default (options = {}) => {
                             return entry[1];
                         }
                     })
-                    .join("\n").substring(1);
+                    .join("\n");
+
+                if(css.length <= 0 && !alwaysOutput) return;
 
                 /* write the css content to a file */
                 fs.writeFileSync(options.output || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css"), css);

@@ -66,6 +66,13 @@ Type: `boolean`
 Default: `false`
 
 Minifies the css being imported.
+
+### alwaysOutput
+
+Type: `boolean`
+Default: `false`
+
+Always output a css bundle even if the css output is empty.
 ---
 
 ## Why
