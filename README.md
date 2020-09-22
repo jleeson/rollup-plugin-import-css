@@ -73,6 +73,7 @@ Type: `boolean`
 Default: `false`
 
 Always output a css bundle even if the css output is empty.
+
 ---
 
 ## Why
