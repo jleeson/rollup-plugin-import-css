@@ -45,10 +45,7 @@ export default (options = {}) => {
                     .sort((a, b) => modules.indexOf(a[0]) - modules.indexOf(b[0]))
                     .map(entry => {
                         /* remove files that were assigned a variable */
-                        const cssFile = bundle[file].modules[entry[0]];
-                        if (cssFile.renderedLength <= 0 && cssFile.removedExports.includes("default")) {
-                            return entry[1];
-                        }
+                        if(!bundle[file].modules[entry[0]]) return entry[1];
                     })
                     .join("\n");
 
