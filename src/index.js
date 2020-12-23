@@ -49,7 +49,7 @@ export default (options = {}) => {
                     })
                     .join("\n");
 
-                if(css.length <= 0 && !alwaysOutput) return;
+                if(css.trim().length <= 0 && !alwaysOutput) return;
 
                 /* write the css content to a file */
                 fs.writeFileSync(options.output || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css"), css);
