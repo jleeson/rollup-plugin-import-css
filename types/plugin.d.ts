@@ -5,6 +5,8 @@ declare interface Options {
     exclude?: string | string[];
     output?: string;
     transform?: Function;
+    minify?: boolean;
+    alwaysOutput?: boolean;
 }
 
 export default function (options?: Options) : Plugin & {

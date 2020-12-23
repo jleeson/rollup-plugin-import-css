@@ -58,7 +58,7 @@ An output file for the css bundle.
 Type: `Function`
 Default: `null`
 
-The transform functin is used for processing the CSS, it receives a string containing the code to process as an argument. The function should return a string.
+The transform function is used for processing the CSS, it receives a string containing the code to process as an argument. The function should return a string.
 
 ### minify
 
