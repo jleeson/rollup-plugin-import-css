@@ -13,9 +13,9 @@ export default {
     plugins: [
         terser({
             output: {
-                preamble: "/* Copyright (c) 2020 Outwalk Studios */"
+                preamble: "/* Copyright (c) 2021 Outwalk Studios */"
             }
         })
     ],
     external: builtinModules.concat(Object.keys(dependencies))
-}
+};
