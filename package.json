@@ -38,8 +38,8 @@
   "author": "Jacob Leeson <jleeson2000@gmail.com> (https://twitter.com/jleesons)",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^7.16.0",
-    "rollup": "^2.35.1",
+    "eslint": "^7.18.0",
+    "rollup": "^2.38.0",
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
