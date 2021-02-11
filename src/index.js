@@ -52,7 +52,8 @@ export default (options = {}) => {
                 if(css.trim().length <= 0 && !alwaysOutput) return;
                 
                 /* create the directories in the output option if they do not already exist */
-                const outputParts = options.output.split("/");
+                const output = options.output || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css");
+                const outputParts = output.split("/");
                 const outputFile = outputParts.pop();
                 const outputPath = path.join(process.cwd(), outputParts.join("/"));
 
