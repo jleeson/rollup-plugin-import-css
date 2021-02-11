@@ -50,9 +50,18 @@ export default (options = {}) => {
                     .join("\n");
 
                 if(css.trim().length <= 0 && !alwaysOutput) return;
+                
+                /* create the directories in the output option if they do not already exist */
+                const outputParts = options.output.split("/");
+                const outputFile = outputParts.pop();
+                const outputPath = path.join(process.cwd(), outputParts.join("/"));
+
+                if(outputParts.length > 0 && !(fs.existsSync(outputPath))) {
+                    fs.mkdirSync(outputPath, { recursive: true });
+                }
 
                 /* write the css content to a file */
-                fs.writeFileSync(options.output || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css"), css);
+                fs.writeFileSync(path.join(outputPath, outputFile) || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css"), css);
             }
         }
     };
