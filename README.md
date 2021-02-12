@@ -50,7 +50,7 @@ A single file, or array of files to exclude when minifying.
 Type: `string`
 Default: `null`
 
-An output file for the css bundle.
+An output file name for the css bundle.
 
 ### transform
 

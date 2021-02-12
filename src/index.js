@@ -37,7 +37,7 @@ export default (options = {}) => {
         },
 
         /* output a css file with all css that was imported without being assigned a variable */
-        generateBundle(options, bundle) {
+        generateBundle(opts, bundle) {
             for (let file in bundle) {
 
                 let modules = Array.isArray(bundle[file].modules) ? bundle[file].modules : Object.getOwnPropertyNames(bundle[file].modules);
@@ -52,17 +52,10 @@ export default (options = {}) => {
                 if(css.trim().length <= 0 && !alwaysOutput) return;
                 
                 /* create the directories in the output option if they do not already exist */
-                const output = options.output || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css");
-                const outputParts = output.split("/");
-                const outputFile = outputParts.pop();
-                const outputPath = path.join(process.cwd(), outputParts.join("/"));
-
-                if(outputParts.length > 0 && !(fs.existsSync(outputPath))) {
-                    fs.mkdirSync(outputPath, { recursive: true });
-                }
+                const output = options.output || path.join(path.dirname(opts.file), path.basename(file, path.extname(opts.file)) + ".css");
 
                 /* write the css content to a file */
-                fs.writeFileSync(path.join(outputPath, outputFile) || path.join(path.dirname(options.file), path.basename(file, path.extname(options.file)) + ".css"), css);
+                this.emitFile({ type: "asset", fileName: output, source: css });
             }
         }
     };
