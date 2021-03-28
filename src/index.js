@@ -52,7 +52,7 @@ export default (options = {}) => {
                 if(css.trim().length <= 0 && !alwaysOutput) return;
                 
                 /* create the directories in the output option if they do not already exist */
-                const output = options.output || path.join(path.dirname(opts.file), path.basename(file, path.extname(opts.file)) + ".css");
+                const output = options.output || `${path.basename(file, path.extname(file))}.css`;
 
                 /* write the css content to a file */
                 this.emitFile({ type: "asset", fileName: output, source: css });

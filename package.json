@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-import-css",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A Rollup plugin to import CSS into JavaScript",
   "main": "dist/plugin.cjs.js",
   "module": "dist/plugin.esm.js",
@@ -38,8 +38,8 @@
   "author": "Jacob Leeson <jleeson2000@gmail.com> (https://twitter.com/jleesons)",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^7.18.0",
-    "rollup": "^2.38.0",
+    "eslint": "^7.23.0",
+    "rollup": "^2.43.0",
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
