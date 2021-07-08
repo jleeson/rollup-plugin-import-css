@@ -27,6 +27,8 @@ import "./styles.css";
 import styles from "./styles.css";
 ```
 
+If your build uses code splitting via dynamic imports or multiple entry points, this plugin will combine all css imports into a single file.
+
 ---
 
 ## Options
