@@ -4,12 +4,20 @@ import path from "path";
 export default (options = {}) => {
     if (!options.transform) options.transform = (code) => code;
 
+    const order = [];
     const styles = {};
     const alwaysOutput = options.alwaysOutput ?? false;
     const filter = createFilter(options.include ?? ["**/*.css"], options.exclude ?? []);
 
     return {
         name: "import-css",
+
+        /* collect the order of imported css files */
+        load(id) {
+            if(id.endsWith(".css")) {
+                order.push(id);
+            }
+        },
 
         /* convert the css file to a module and save the code for a file output */
         transform(code, id) {
@@ -38,9 +46,11 @@ export default (options = {}) => {
             }
 
             /* remove css that was imported as a string */
-            const css = Object.entries(styles).map(([id, code]) => {
-                if (!modules[id]) return code;
-            }).join("\n");
+            const css = Object.entries(styles)
+                .sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
+                .map(([id, code]) => {
+                    if (!modules[id]) return code;
+                }).join("\n");
 
             if (css.trim().length <= 0 && !alwaysOutput) return;
 

@@ -29,6 +29,8 @@ import styles from "./styles.css";
 
 If your build uses code splitting via dynamic imports or multiple entry points, this plugin will combine all css imports into a single file.
 
+This plugin respects the import order of your css files.
+
 ---
 
 ## Options
@@ -79,7 +81,7 @@ Always output a css bundle even if the css output is empty.
 
 ## Why
 
-With WebComponent frameworks, its useful to be able to import the css for a component. Other solutions for rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports plain css with the option to process it further.
+With WebComponent frameworks, its useful to be able to import the css for a component. Other solutions for rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports plain css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly. 
 
 ---
 
