@@ -4,20 +4,27 @@ import path from "path";
 export default (options = {}) => {
     if (!options.transform) options.transform = (code) => code;
 
-    const order = [];
     const styles = {};
     const alwaysOutput = options.alwaysOutput ?? false;
     const filter = createFilter(options.include ?? ["**/*.css"], options.exclude ?? []);
 
+    /* function to sort the css imports in order - credit to rollup-plugin-postcss */
+    const getRecursiveImportOrder = (id, getModuleInfo, seen = new Set()) => {
+        if (seen.has(id)) return [];
+
+        seen.add(id);
+
+        const result = [id];
+
+        getModuleInfo(id).importedIds.forEach((importFile) => {
+            result.push(...getRecursiveImportOrder(importFile, getModuleInfo, seen));
+        });
+
+        return result;
+    };
+
     return {
         name: "import-css",
-
-        /* collect the order of imported css files */
-        load(id) {
-            if(id.endsWith(".css")) {
-                order.push(id);
-            }
-        },
 
         /* convert the css file to a module and save the code for a file output */
         transform(code, id) {
@@ -41,13 +48,18 @@ export default (options = {}) => {
 
             /* collect all the imported modules for each entry file */
             let modules = {};
+            let entryChunk = null;
             for (let file in bundle) {
                 modules = Object.assign(modules, bundle[file].modules);
+                if (!entryChunk) entryChunk = bundle[file].facadeModuleId;
             }
+
+            /* get the list of modules in order */
+            const moduleIds = getRecursiveImportOrder(entryChunk, this.getModuleInfo);
 
             /* remove css that was imported as a string */
             const css = Object.entries(styles)
-                .sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
+                .sort((a, b) => moduleIds.indexOf(a[0]) - moduleIds.indexOf(b[0]))
                 .map(([id, code]) => {
                     if (!modules[id]) return code;
                 }).join("\n");
