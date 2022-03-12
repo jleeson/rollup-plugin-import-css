@@ -3,7 +3,7 @@
   "version": "3.0.2",
   "description": "A Rollup plugin to import CSS into JavaScript",
   "main": "dist/plugin.cjs.js",
-  "module": "dist/plugin.esm.js",
+  "module": "dist/plugin.esm.mjs",
   "types": "types/plugin.d.ts",
   "scripts": {
     "build": "rollup -c",
@@ -23,8 +23,8 @@
   "exports": {
     ".": {
       "require": "./dist/plugin.cjs.js",
-      "import": "./dist/plugin.esm.js",
-      "default": "./dist/plugin.esm.js"
+      "import": "./dist/plugin.esm.mjs",
+      "default": "./dist/plugin.esm.mjs"
     }
   },
   "repository": {
