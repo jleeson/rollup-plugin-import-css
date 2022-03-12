@@ -7,14 +7,11 @@ import { builtinModules } from "module";
 export default {
     input: "src/index.js",
     output: [
-        { file: "dist/plugin.esm.mjs", format: "esm" },
-        { file: "dist/plugin.cjs.js", format: "cjs", exports: "default" },
+        { file: "dist/plugin.mjs", format: "esm" },
+        { file: "dist/plugin.js", format: "cjs", exports: "default" },
     ],
     plugins: [
-        esbuild({
-            target: "es2015",
-            minify: true
-        })
+        esbuild({ target: "es2015", minify: true })
     ],
     external: builtinModules.concat(Object.keys(dependencies))
 };
