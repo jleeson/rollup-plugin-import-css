@@ -7,7 +7,7 @@ import { builtinModules } from "module";
 export default {
     input: "src/index.js",
     output: [
-        { file: "dist/plugin.esm.js", format: "esm" },
+        { file: "dist/plugin.esm.mjs", format: "esm" },
         { file: "dist/plugin.cjs.js", format: "cjs", exports: "default" },
     ],
     plugins: [
