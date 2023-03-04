@@ -23,7 +23,7 @@ This plugins supports three forms of importing css.
 ```js
 import "./styles.css"; /* extract the styles to a external css bundle */
 import styles from "./styles.css"; /* import the styles as a string */
-import styles from "./styles.css"; assert { type: "css" }; /* import the styles as a CSSStyleSheet */
+import styles from "./styles.css" assert { type: "css" }; /* import the styles as a CSSStyleSheet */
 ```
 
 NOTICE: using import assertions requires Rollup v3+
