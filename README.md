@@ -19,12 +19,11 @@ export default {
 };
 ```
 
-This will make all imported css files be bundled into a single css file as well as make css files accessible as a default export.
-
-This plugins supports two forms of importing css, when a css file is imported without an assigned variable, the css is bundled into a single css file.
+This plugins supports three forms of importing css.
 ```js
-import "./styles.css";
-import styles from "./styles.css";
+import "./styles.css"; /* extract the styles to a external css bundle */
+import styles from "./styles.css"; /* import the styles as a string */
+import styles from "./styles.css"; assert { type: "css" }; /* import the styles as a CSSStyleSheet */
 ```
 
 If your build uses code splitting via dynamic imports or multiple entry points, this plugin will combine all css imports into a single file.
@@ -70,6 +69,13 @@ Default: `false`
 
 Minifies the css being imported.
 
+### modules
+
+Type: `boolean`
+Default: `false`
+
+All css files being imported with a variable will use native CSS Modules.
+
 ### alwaysOutput
 
 Type: `boolean`
@@ -81,7 +87,7 @@ Always output a css bundle even if the css output is empty.
 
 ## Why
 
-With WebComponent frameworks, its useful to be able to import the css for a component. Other solutions for rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports plain css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly. 
+With WebComponent frameworks, its useful to be able to import the css for components in a variety of ways. Other solutions for Rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports plain css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly. 
 
 ---
 

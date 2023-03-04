@@ -6,6 +6,7 @@ declare interface Options {
     output?: string;
     transform?: Function;
     minify?: boolean;
+    modules?: boolean;
     alwaysOutput?: boolean;
 }
 
