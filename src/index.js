@@ -37,6 +37,14 @@ export default (options = {}) => {
                 styles[id] = transformedCode;
             }
 
+            const moduleInfo = this.getModuleInfo(id);
+            if (moduleInfo.assertions?.type == "css") {
+                return {
+                    code: `export default new CSSStyleSheet().replaceSync(${JSON.stringify(transformedCode)});`,
+                    map: { mappings: "" }
+                };
+            }
+
             return {
                 code: `export default ${JSON.stringify(transformedCode)};`,
                 map: { mappings: "" }
@@ -60,9 +68,9 @@ export default (options = {}) => {
             /* remove css that was imported as a string */
             const css = Object.entries(styles)
                 .sort((a, b) => moduleIds.indexOf(a[0]) - moduleIds.indexOf(b[0]))
-                .map(([id, code]) => {
-                    if (!modules[id]) return code;
-                }).join("\n");
+                .filter((module) => !modules[module.id])
+                .map((module) => module.code)
+                .join("\n");
 
             if (css.trim().length <= 0 && !alwaysOutput) return;
 
