@@ -38,10 +38,10 @@
   "author": "Jacob Leeson <jleeson2000@gmail.com> (https://twitter.com/jleesons)",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.15.12",
-    "eslint": "^8.26.0",
-    "rollup": "^2.79.1",
-    "rollup-plugin-esbuild": "^4.8.2"
+    "esbuild": "^0.17.11",
+    "eslint": "^8.35.0",
+    "rollup": "^3.18.0",
+    "rollup-plugin-esbuild": "^5.0.0"
   },
   "dependencies": {
     "@rollup/pluginutils": "^5.0.2"

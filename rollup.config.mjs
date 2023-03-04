@@ -1,9 +1,9 @@
-/* imports */
 import esbuild from "rollup-plugin-esbuild";
-import { dependencies } from "./package.json";
 import { builtinModules } from "module";
+import fs from "fs";
 
-/* build config */
+const { dependencies } = JSON.parse(fs.readFileSync(new URL("./package.json", import.meta.url)));
+
 export default {
     input: "src/index.js",
     output: [
