@@ -26,6 +26,8 @@ import styles from "./styles.css"; /* import the styles as a string */
 import styles from "./styles.css"; assert { type: "css" }; /* import the styles as a CSSStyleSheet */
 ```
 
+NOTICE: using import assertions requires Rollup v3+
+
 If your build uses code splitting via dynamic imports or multiple entry points, this plugin will combine all css imports into a single file.
 
 This plugin respects the import order of your css files.
