@@ -40,7 +40,7 @@ export default (options = {}) => {
             const moduleInfo = this.getModuleInfo(id);
             if (options.modules || moduleInfo.assertions?.type == "css") {
                 return {
-                    code: `export default new CSSStyleSheet().replaceSync(${JSON.stringify(transformedCode)});`,
+                    code: `const sheet = new CSSStyleSheet();sheet.replaceSync(${JSON.stringify(transformedCode)});export default sheet;`,
                     map: { mappings: "" }
                 };
             }
