@@ -78,7 +78,7 @@ export default (options = {}) => {
             /* return the asset name by going through a set of possible options */
             const getAssetName = () => {
                 const fileName = options.output ?? (opts.file ?? "bundle.js");
-                return path.basename(fileName, path.extname(fileName));
+                return `${path.basename(fileName, path.extname(fileName))}.css`;
             };
 
             /* return the asset fileName by going through a set of possible options */
