@@ -6,7 +6,7 @@
   "module": "dist/plugin.mjs",
   "types": "types/plugin.d.ts",
   "engines": {
-    "node": "^16"
+    "node": ">=16"
   },
   "scripts": {
     "build": "rollup -c",
