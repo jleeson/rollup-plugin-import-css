@@ -11,7 +11,7 @@ export default {
         { file: "dist/plugin.js", format: "cjs", exports: "default" },
     ],
     plugins: [
-        esbuild({ target: "es2015", minify: true })
+        esbuild({ target: "node16", minify: true })
     ],
     external: builtinModules.concat(Object.keys(dependencies))
 };

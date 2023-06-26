@@ -75,9 +75,26 @@ export default (options = {}) => {
 
             if (css.trim().length <= 0 && !alwaysOutput) return;
 
-            const filename = options.output ?? (opts.file ?? "bundle.js");
-            const dest = path.basename(filename, path.extname(filename));
-            this.emitFile({ type: "asset", fileName: `${dest}.css`, source: css });
+            /* return the asset name by going through a set of possible options */
+            const getAssetName = () => {
+                const fileName = options.output ?? (opts.file ?? "bundle.js");
+                return path.basename(fileName, path.extname(fileName));
+            };
+
+            /* return the asset fileName by going through a set of possible options */
+            const getAssetFileName = () => {
+                if (options.output) return options.output;
+                if (opts.assetFileNames) return undefined;
+
+                return `${getAssetName()}.css`;
+            };
+
+            this.emitFile({
+                type: "asset",
+                name: getAssetName(),
+                fileName: getAssetFileName(),
+                source: css
+            });
         }
     };
 };

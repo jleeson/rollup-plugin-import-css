@@ -3,7 +3,8 @@ A Rollup plugin to import CSS into JavaScript
 
 ![Actions](https://github.com/jleeson/rollup-plugin-import-css/workflows/build/badge.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jleeson/rollup-plugin-import-css/blob/master/LICENSE)
-[![Donate](https://img.shields.io/badge/patreon-donate-green.svg)](https://www.patreon.com/outwalkstudios)
+[![Follow Us](https://img.shields.io/badge/follow-on%20twitter-4AA1EC.svg)](https://twitter.com/jleesons)
+
 
 ---
 
@@ -55,7 +56,7 @@ A single file, or array of files to exclude when minifying.
 Type: `string`
 Default: `null`
 
-An output file name for the css bundle.
+An output file name for the css bundle. By default `output.assetFileNames` is used.
 
 ### transform
 
@@ -89,7 +90,7 @@ Always output a css bundle even if the css output is empty.
 
 ## Why
 
-With WebComponent frameworks, its useful to be able to import the css for components in a variety of ways. Other solutions for Rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports plain css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly. 
+With WebComponent frameworks, its useful to be able to import the css for components in a variety of ways. Other solutions for Rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports standard css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly. 
 
 ---
 
