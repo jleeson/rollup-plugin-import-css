@@ -42,13 +42,13 @@
   "author": "Jacob Leeson <jleeson2000@gmail.com> (https://twitter.com/jleesons)",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.18.8",
-    "eslint": "^8.43.0",
-    "rollup": "^3.25.2",
+    "esbuild": "^0.19.2",
+    "eslint": "^8.49.0",
+    "rollup": "^3.29.1",
     "rollup-plugin-esbuild": "^5.0.0"
   },
   "dependencies": {
-    "@rollup/pluginutils": "^5.0.2"
+    "@rollup/pluginutils": "^5.0.4"
   },
   "peerDependencies": {
     "rollup": "^2.x.x || ^3.x.x"
