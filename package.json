@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-import-css",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "A Rollup plugin to import CSS into JavaScript",
   "main": "dist/plugin.js",
   "module": "dist/plugin.mjs",
@@ -26,7 +26,7 @@
   ],
   "exports": {
     ".": {
-      "types": "./plugin.d.ts",
+      "types": "./types/plugin.d.ts",
       "require": "./dist/plugin.js",
       "import": "./dist/plugin.mjs"
     }
