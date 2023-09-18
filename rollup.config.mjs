@@ -7,8 +7,8 @@ const { dependencies } = JSON.parse(fs.readFileSync(new URL("./package.json", im
 export default {
     input: "src/index.js",
     output: [
-        { file: "dist/plugin.mjs", format: "esm" },
-        { file: "dist/plugin.js", format: "cjs", exports: "default" },
+        { file: "dist/plugin.js", format: "esm" },
+        { file: "dist/plugin.cjs", format: "cjs", exports: "default" },
     ],
     plugins: [
         esbuild({ target: "node16" })
