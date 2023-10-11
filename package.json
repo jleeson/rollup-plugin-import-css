@@ -52,6 +52,6 @@
     "@rollup/pluginutils": "^5.0.4"
   },
   "peerDependencies": {
-    "rollup": "^2.x.x || ^3.x.x"
+    "rollup": "^2.x.x || ^3.x.x || ^4.x.x"
   }
 }
