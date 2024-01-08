@@ -23,6 +23,17 @@ export default (options = {}) => {
         return result;
     };
 
+    /* minify css */
+    const minifyCSS = (content) => {
+        content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, "");
+        content = content.replace(/ {2,}/g, " ");
+        content = content.replace(/ ([{:}]) /g, "$1");
+        content = content.replace(/([{:}]) /g, "$1");
+        content = content.replace(/([;,]) /g, "$1");
+        content = content.replace(/ !/g, "!");
+        return content;
+    };
+
     return {
         name: "import-css",
 
@@ -55,23 +66,32 @@ export default (options = {}) => {
         generateBundle(opts, bundle) {
 
             /* collect all the imported modules for each entry file */
-            let modules = {};
-            let entryChunk = null;
-            for (let file in bundle) {
-                modules = Object.assign(modules, bundle[file].modules);
-                if (!entryChunk) entryChunk = bundle[file].facadeModuleId;
-            }
-
-            /* get the list of modules in order */
+            const modules = Object.keys(bundle).reduce((modules, file) => Object.assign(modules, bundle[file].modules), {});
+            const entryChunk = Object.values(bundle).find((chunk) => chunk.facadeModuleId).facadeModuleId;
             const moduleIds = getRecursiveImportOrder(entryChunk, this.getModuleInfo);
 
             /* remove css that was imported as a string */
-            const css = Object.entries(styles)
-                .sort((a, b) => moduleIds.indexOf(a[0]) - moduleIds.indexOf(b[0]))
-                .map(([id, code]) => {
-                    if (!modules[id]) return code;
-                })
-                .join("\n");
+            const stylesheets = Object.keys(styles)
+                .sort((a, b) => moduleIds.indexOf(a) - moduleIds.indexOf(b))
+                .filter((id) => !modules[id]);
+
+            /* if perserveModules is true, output the css files without bundling */
+            if (opts.preserveModules) {
+                for (let id of stylesheets) {
+                    const relativeToEntry = path.dirname(path.relative(entryChunk, id));
+                    const outputPath = opts.dir ? opts.dir : path.dirname(opts.file);
+                    const fileName = path.join(path.join(outputPath, relativeToEntry), path.basename(id));
+
+                    if (styles[id].trim().length <= 0 && !alwaysOutput) continue;
+
+                    this.emitFile({ type: "asset", fileName: fileName, source: styles[id] });
+                }
+
+                return;
+            }
+
+            /* merge all css files into a single stylesheet */
+            const css = stylesheets.map((id) => styles[id]).join("\n");
 
             if (css.trim().length <= 0 && !alwaysOutput) return;
 
@@ -86,7 +106,7 @@ export default (options = {}) => {
                 if (options.output) return options.output;
                 if (opts.assetFileNames) return undefined;
 
-                return `${getAssetName()}.css`;
+                return getAssetName();
             };
 
             this.emitFile({
@@ -98,14 +118,3 @@ export default (options = {}) => {
         }
     };
 };
-
-/* minify css */
-function minifyCSS(content) {
-    content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, "");
-    content = content.replace(/ {2,}/g, " ");
-    content = content.replace(/ ([{:}]) /g, "$1");
-    content = content.replace(/([{:}]) /g, "$1");
-    content = content.replace(/([;,]) /g, "$1");
-    content = content.replace(/ !/g, "!");
-    return content;
-}

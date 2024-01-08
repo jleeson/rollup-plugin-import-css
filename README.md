@@ -29,7 +29,7 @@ import styles from "./styles.css" assert { type: "css" }; /* import the styles a
 
 NOTICE: using import assertions requires Rollup v3+
 
-If your build uses code splitting via dynamic imports or multiple entry points, this plugin will combine all css imports into a single file.
+If your build uses `preserveModules`, this plugin will process and output your css files while maintaining their original file structure.
 
 This plugin respects the import order of your css files.
 
@@ -90,7 +90,7 @@ Always output a css bundle even if the css output is empty.
 
 ## Why
 
-With WebComponent frameworks, its useful to be able to import the css for components in a variety of ways. Other solutions for Rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports standard css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly. 
+With modern web frameworks, its useful to be able to import the css for components in a variety of ways. Other solutions for Rollup either lack features or are large and bloated with extra features that some users may not need such as SASS or LESS support. This plugin is small and by default only supports standard css with the option to process it further. Unlike most other css plugins this plugin maintains the order of your imports in order to avoid overwritting css unexpectedly and respects Rollup's preserveModules option. 
 
 ---
 
