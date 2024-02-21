@@ -7,6 +7,7 @@ declare interface Options {
     transform?: Function;
     minify?: boolean;
     modules?: boolean;
+    inject?: boolean;
     alwaysOutput?: boolean;
 }
 

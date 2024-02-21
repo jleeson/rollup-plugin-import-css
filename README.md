@@ -79,6 +79,13 @@ Default: `false`
 
 All css files being imported with a variable will use native CSS Modules.
 
+### inject
+
+Type: `boolean`
+Default: `false`
+
+All css files being imported will be injected into the document head at runtime.
+
 ### alwaysOutput
 
 Type: `boolean`

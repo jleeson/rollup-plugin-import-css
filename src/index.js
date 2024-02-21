@@ -15,10 +15,13 @@ export default (options = {}) => {
         seen.add(id);
 
         const result = [id];
+        const moduleInfo = getModuleInfo(id);
 
-        getModuleInfo(id).importedIds.forEach((importFile) => {
-            result.push(...getRecursiveImportOrder(importFile, getModuleInfo, seen));
-        });
+        if (moduleInfo) {
+            getModuleInfo(id).importedIds.forEach((importFile) => {
+                result.push(...getRecursiveImportOrder(importFile, getModuleInfo, seen));
+            });
+        }
 
         return result;
     };
@@ -48,10 +51,19 @@ export default (options = {}) => {
                 styles[id] = transformedCode;
             }
 
+            /* if modules are enabled or an import uses native css module syntax, export it as a CSSStyleSheet */
             const moduleInfo = this.getModuleInfo(id);
             if (options.modules || moduleInfo.assertions?.type == "css") {
                 return {
                     code: `const sheet = new CSSStyleSheet();sheet.replaceSync(${JSON.stringify(transformedCode)});export default sheet;`,
+                    map: { mappings: "" }
+                };
+            }
+
+            /* if inject is enabled, we want to simply inject the stylesheet into the document head */
+            if (options.inject) {
+                return {
+                    code: `document.head.innerHTML += ${JSON.stringify(`<style>${transformedCode}</style>`)};`,
                     map: { mappings: "" }
                 };
             }
@@ -68,12 +80,14 @@ export default (options = {}) => {
             /* collect all the imported modules for each entry file */
             const modules = Object.keys(bundle).reduce((modules, file) => Object.assign(modules, bundle[file].modules), {});
             const entryChunk = Object.values(bundle).find((chunk) => chunk.facadeModuleId).facadeModuleId;
-            const moduleIds = getRecursiveImportOrder(entryChunk, this.getModuleInfo);
 
-            /* remove css that was imported as a string */
-            const stylesheets = Object.keys(styles)
-                .sort((a, b) => moduleIds.indexOf(a) - moduleIds.indexOf(b))
-                .filter((id) => !modules[id]);
+            /* remove css that was imported as a string, if there are no remaining stylesheets, we can return early */
+            const stylesheets = Object.keys(styles).filter((id) => !modules[id]);
+            if (!stylesheets.length) return;
+
+            /* get the import order of the stylesheets and sort the array in place */
+            const moduleIds = getRecursiveImportOrder(entryChunk, this.getModuleInfo);
+            stylesheets.sort((a, b) => moduleIds.indexOf(a) - moduleIds.indexOf(b));
 
             /* if perserveModules is true, output the css files without bundling */
             if (opts.preserveModules) {
