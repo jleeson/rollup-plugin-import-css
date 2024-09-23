@@ -28,12 +28,13 @@ export default (options = {}) => {
 
     /* minify css */
     const minifyCSS = (content) => {
-        content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, "");
-        content = content.replace(/ {2,}/g, " ");
-        content = content.replace(/ ([{:}]) /g, "$1");
-        content = content.replace(/([{:}])([^\-\s])/g, "$1 $2");
-        content = content.replace(/([;,]) /g, "$1");
-        content = content.replace(/ !/g, "!");
+        content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, ""); // Remove comments and newlines
+        content = content.replace(/ {2,}/g, " "); // Replace multiple spaces with one
+        content = content.replace(/ ([{:}]) /g, "$1"); // Remove space around braces and colons
+        content = content.replace(/([{:}])\s+/g, "$1"); // Remove space after { and other braces
+        content = content.replace(/(:)(?!\s)/g, "$1 "); // Ensure a space after colon in property declarations
+        content = content.replace(/([;,]) /g, "$1"); // Remove space after semicolons and commas
+        content = content.replace(/ !/g, "!"); // Remove space before !
         return content;
     };
 
