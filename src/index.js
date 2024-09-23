@@ -54,7 +54,7 @@ export default (options = {}) => {
 
             /* if modules are enabled or an import uses native css module syntax, export it as a CSSStyleSheet */
             const moduleInfo = this.getModuleInfo(id);
-            if (options.modules || moduleInfo.assertions?.type == "css") {
+            if (options.modules || moduleInfo.attributes?.type == "css") {
                 return {
                     code: `const sheet = new CSSStyleSheet();sheet.replaceSync(${JSON.stringify(transformedCode)});export default sheet;`,
                     map: { mappings: "" }
