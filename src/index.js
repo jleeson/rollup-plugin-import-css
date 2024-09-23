@@ -31,7 +31,7 @@ export default (options = {}) => {
         content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, "");
         content = content.replace(/ {2,}/g, " ");
         content = content.replace(/ ([{:}]) /g, "$1");
-        content = content.replace(/([{:}]) /g, "$1");
+        content = content.replace(/([{:}])([^\-\s])/g, "$1 $2");
         content = content.replace(/([;,]) /g, "$1");
         content = content.replace(/ !/g, "!");
         return content;
