@@ -32,7 +32,7 @@ export default (options = {}) => {
         content = content.replace(/ {2,}/g, " "); // Replace multiple spaces with one
         content = content.replace(/\[([^\]]*?)\]/g, (match, p1) => `[${p1.replace(/\s*:\s*/g, ": ").replace(/\s*([=<>^$|~])\s*/g, "$1").trim()}]`); // Preserve spaces inside attribute selectors (inside [])
         content = content.replace(/\s*([{};])\s*/g, "$1"); // Remove spaces around `{`, `}`, and `;`
-        content = content.replace(/([a-zA-Z0-9_-])\s*(:[a-zA-Z])/g, "$1 $2"); // Add space before pseudo-classes
+        content = content.replace(/([a-zA-Z0-9_-])(\s+)(:[a-zA-Z])/g, "$1 $3"); // Add space before pseudo-classes
         content = content.replace(/([a-zA-Z0-9_-]+):\s*([^;"{}]+(?:;|$))/g, "$1:$2"); // Remove spaces in property declarations
         return content;
     };
