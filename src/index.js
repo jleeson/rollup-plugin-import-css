@@ -28,13 +28,21 @@ export default (options = {}) => {
 
     /* minify css */
     const minifyCSS = (content) => {
-        content = content.replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, ""); // Remove comments and newlines
-        content = content.replace(/ {2,}/g, " "); // Replace multiple spaces with one
-        content = content.replace(/\[([^\]]*?)\]/g, (match, p1) => `[${p1.replace(/\s*:\s*/g, ": ").replace(/\s*([=<>^$|~])\s*/g, "$1").trim()}]`); // Preserve spaces inside attribute selectors (inside [])
-        content = content.replace(/\s*([{};])\s*/g, "$1"); // Remove spaces around `{`, `}`, and `;`
-        content = content.replace(/([a-zA-Z0-9_-])\s*(:[a-zA-Z])/g, "$1 $2"); // Add space before pseudo-classes
-        content = content.replace(/([a-zA-Z0-9_-]+):\s*([^;"{}]+(?:;|$))/g, "$1:$2"); // Remove spaces in property declarations
-        return content;
+        const comments = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\/\*[\s\S]*?\*\//g;
+        const everythingElse = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s*([+-])\s*(?=[^}]*{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+/g;
+
+        const searchPatterns = [comments, everythingElse];
+        const replacePatterns = ["$1", "$1$2$3$4$5$6$7$8"];
+
+        let result = content;
+        searchPatterns.forEach((pattern, index) => {
+            result = result.replace(pattern, replacePatterns[index]);
+        });
+
+        /* Remove any extra newlines that may still be present */
+        result = result.replace(/\n+/g, "");
+
+        return result;
     };
 
 
