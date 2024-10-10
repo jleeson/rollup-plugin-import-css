@@ -29,22 +29,14 @@ export default (options = {}) => {
     /* minify css */
     const minifyCSS = (content) => {
         const comments = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\/\*[\s\S]*?\*\//g;
-        const everythingElse = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s*([+-])\s*(?=[^}]*{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+/g;
+        const syntax = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s+([+-])(?=.*\{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+(?![^(]*\))/g;
 
-        const searchPatterns = [comments, everythingElse];
-        const replacePatterns = ["$1", "$1$2$3$4$5$6$7$8"];
+        content = content.replace(comments, "$1");
+        content = content.replace(syntax, "$1$2$3$4$5$6$7$8");
+        content = content.replace(/\n+/g, "");
 
-        let result = content;
-        searchPatterns.forEach((pattern, index) => {
-            result = result.replace(pattern, replacePatterns[index]);
-        });
-
-        /* Remove any extra newlines that may still be present */
-        result = result.replace(/\n+/g, "");
-
-        return result;
+        return content;
     };
-
 
     return {
         name: "import-css",
