@@ -30,12 +30,7 @@ export default (options = {}) => {
     const minifyCSS = (content) => {
         const comments = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\/\*[\s\S]*?\*\//g;
         const syntax = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s+([+-])(?=.*\{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+(?![^(]*\))/g;
-
-        content = content.replace(comments, "$1");
-        content = content.replace(syntax, "$1$2$3$4$5$6$7$8");
-        content = content.replace(/\n+/g, "");
-
-        return content;
+        return content.replace(comments, "$1").replace(syntax, "$1$2$3$4$5$6$7$8").replace(/\n+/g, " ");
     };
 
     return {
