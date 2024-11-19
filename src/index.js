@@ -60,7 +60,7 @@ export default (options = {}) => {
             /* if inject is enabled, we want to simply inject the stylesheet into the document head */
             if (options.inject) {
                 return {
-                    code: `document.head.appendChild(document.createElement('style')).textContent=${JSON.stringify(transformedCode)};`,
+                    code: `document.head.appendChild(document.createElement("style")).textContent=${JSON.stringify(transformedCode)};`,
                     map: { mappings: "" }
                 };
             }
@@ -87,7 +87,7 @@ export default (options = {}) => {
             stylesheets.sort((a, b) => moduleIds.indexOf(a) - moduleIds.indexOf(b));
 
             /* if perserveModules is true, output the css files without bundling */
-            if (opts.preserveModules) {
+            if (opts.preserveModules && !options.output) {
                 for (let id of stylesheets) {
                     const relativeToEntry = path.dirname(path.relative(entryChunk, id));
                     const outputPath = opts.dir ? opts.dir : path.dirname(opts.file);
