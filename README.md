@@ -24,10 +24,10 @@ This plugins supports three forms of importing css.
 ```js
 import "./styles.css"; /* extract the styles to a external css bundle */
 import styles from "./styles.css"; /* import the styles as a string */
-import styles from "./styles.css" assert { type: "css" }; /* import the styles as a CSSStyleSheet */
+import styles from "./styles.css" with { type: "css" }; /* import the styles as a CSSStyleSheet */
 ```
 
-NOTICE: using import assertions requires Rollup v3+
+NOTICE: using import attributes requires Rollup v3+
 
 If your build uses `preserveModules`, this plugin will process and output your css files while maintaining their original file structure.
 
@@ -42,14 +42,14 @@ This plugin respects the import order of your css files.
 Type: `array` or `string`
 Default: `[]`
 
-A single file, or array of files to include when minifying.
+A single file, or array of files to include in the plugins processing.
 
 ### exclude
 
 Type: `array` or `string`
 Default: `[]`
 
-A single file, or array of files to exclude when minifying.
+A single file, or array of files to exclude in the plugins processing.
 
 ### output
 
