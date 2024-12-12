@@ -28,9 +28,20 @@ export default (options = {}) => {
 
     /* minify css */
     const minifyCSS = (content) => {
+        const calc_functions = [];
+        const calc_regex = /\bcalc\(([^)]+)\)/g;
         const comments = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\/\*[\s\S]*?\*\//g;
         const syntax = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s+([+-])(?=.*\{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+(?![^(]*\))/g;
-        return content.replace(comments, "$1").replace(syntax, "$1$2$3$4$5$6$7$8").replace(/\n+/g, " ");
+
+        return content
+            .replace(calc_regex, (_, group) => {
+                calc_functions.push(group);
+                return "__CALC__";
+            })
+            .replace(comments, "$1")
+            .replace(syntax, "$1$2$3$4$5$6$7$8")
+            .replace(/__CALC__/g, () => `calc(${calc_functions.shift()})`)
+            .replace(/\n+/g, " ");
     };
 
     return {
