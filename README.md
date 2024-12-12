@@ -70,7 +70,8 @@ The transform function is used for processing the CSS, it receives a string cont
 Type: `boolean`
 Default: `false`
 
-Minifies the css being imported.
+Minifies the css being imported. <br/>
+**NOTE:** this minifier uses regex, for more complex css, you can utilize your own minifier via the `transform` function.
 
 ### modules
 
