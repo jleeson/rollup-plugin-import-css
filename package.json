@@ -1,7 +1,7 @@
 {
   "name": "rollup-plugin-import-css",
   "type": "module",
-  "version": "3.5.7",
+  "version": "3.5.8",
   "description": "A Rollup plugin to import CSS into JavaScript",
   "main": "dist/plugin.cjs",
   "module": "dist/plugin.js",
