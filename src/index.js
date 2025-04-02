@@ -48,10 +48,10 @@ export default (options = {}) => {
         name: "import-css",
 
         /* convert the css file to a module and save the code for a file output */
-        transform(code, id) {
+        async transform(code, id) {
             if (!filter(id)) return;
 
-            const transformedCode = (options.minify) ? minifyCSS(options.transform(code)) : options.transform(code);
+            const transformedCode = (options.minify) ? minifyCSS(await options.transform(code)) : await options.transform(code);
 
             /* cache the result */
             if (!styles[id] || styles[id] != transformedCode) {
