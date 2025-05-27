@@ -26,61 +26,27 @@ export default (options = {}) => {
         return result;
     };
 
-    const findClosingParenthesis = (content, from) => {
-        let depth = 1;
-        for (let i = from; i < content.length; i += 1) {
-            const char = content[i];
-            if (char == "(") {
-                depth += 1;
-            } else if (char == ")") {
-                if (depth === 1) {
-                    return i;
-                }
-    
-                depth -= 1;
-            }
-        }
-
-        return undefined;
-    };
-
-    const replaceCalc = (content) => {
-        const calc_functions = [];
-        const calc_start_regex = /\bcalc\([^)]/g;
-        let match;
-        while ((match = calc_start_regex.exec(content)) !== null) {
-            if (match.index === calc_start_regex.lastIndex) {
-                break;
-            }
-
-            const start = match.index + 5;
-            const end = findClosingParenthesis(content, start);
-            if (end === undefined) {
-                throw new Error("Missing closing parenthesis in calc() function");
-            }
-
-            const calc_function = content.slice(start, end);
-            calc_functions.push(calc_function);
-
-            const before = content.slice(0, match.index);
-            const after = content.slice(end + 1);
-            content = `${before}__CALC__${after}`;
-        }
-
-        return { calc_functions, result: content };
-    };
-
     /* minify css */
-    const minifyCSS = (content) => {
-        const comments = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\/\*[\s\S]*?\*\//g;
-        const syntax = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s+([+-])(?=.*\{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+(?![^(]*\))/g;
-
-        const { result, calc_functions } = replaceCalc(content);
-
-        return result
-            .replace(comments, "$1")
-            .replace(syntax, "$1$2$3$4$5$6$7$8")
-            .replace(/__CALC__/g, () => `calc(${calc_functions.shift()})`)
+    const minifyCSS = (css) => {
+        /* Step 1: Remove comments but preserve quoted strings */
+        return css.replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')|\/\*[^]*?\*\//g, (_, quoted) => quoted || "")
+            /* Step 2: Remove spaces around ; and } — keep the closing brace */
+            .replace(/\s*;\s*(})/g, ";$1")
+            /* Step 3: Remove spaces around meta characters and operators */
+            .replace(/\s*([*$~^|]?=|[{};,>~]|!important)\s*/g, "$1")
+            /* Step 4: Remove spaces around + and - in selectors before { */
+            .replace(/\s*([+-])\s*(?=[^}]*\{)/g, "$1")
+            /* Step 5: Remove space after [, ( */
+            .replace(/([[(])\s+/g, "$1")
+            /* Step 6: Remove space before ], ) */
+            .replace(/\s+([\])])/g, "$1")
+            /* Step 7: Remove space around colon, only outside selectors */
+            .replace(/({[^}]*?)\s*:\s*/g, "$1:")
+            /* Step 8: Trim leading and trailing whitespace */
+            .replace(/^\s+|\s+$/g, "")
+            /* Step 9: Collapse multiple spaces into one */
+            .replace(/(\s)\s+/g, "$1")
+            /* Step 10: Replace newlines characters with a space. */
             .replace(/\n+/g, " ");
     };
 
