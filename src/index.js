@@ -26,18 +26,58 @@ export default (options = {}) => {
         return result;
     };
 
+    const findClosingParenthesis = (content, from) => {
+        let depth = 1;
+        for (let i = from; i < content.length; i += 1) {
+            const char = content[i];
+            if (char == "(") {
+                depth += 1;
+            } else if (char == ")") {
+                if (depth === 1) {
+                    return i;
+                }
+    
+                depth -= 1;
+            }
+        }
+
+        return undefined;
+    };
+
+    const replaceCalc = (content) => {
+        const calc_functions = [];
+        const calc_start_regex = /\bcalc\([^)]/g;
+        let match;
+        while ((match = calc_start_regex.exec(content)) !== null) {
+            if (match.index === calc_start_regex.lastIndex) {
+                break;
+            }
+
+            const start = match.index + 5;
+            const end = findClosingParenthesis(content, start);
+            if (end === undefined) {
+                throw new Error("Missing closing parenthesis in calc() function");
+            }
+
+            const calc_function = content.slice(start, end);
+            calc_functions.push(calc_function);
+
+            const before = content.slice(0, match.index);
+            const after = content.slice(end + 1);
+            content = `${before}__CALC__${after}`;
+        }
+
+        return { calc_functions, result: content };
+    };
+
     /* minify css */
     const minifyCSS = (content) => {
-        const calc_functions = [];
-        const calc_regex = /\bcalc\(([^)]+)\)/g;
         const comments = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\/\*[\s\S]*?\*\//g;
         const syntax = /("(?:[^"\\]+|\\.)*"|'(?:[^'\\]+|\\.)*')|\s*([{};,>~])\s*|\s*([*$~^|]?=)\s*|\s+([+-])(?=.*\{)|([[(:])\s+|\s+([\])])|\s+(:)(?![^}]*\{)|^\s+|\s+$|(\s)\s+(?![^(]*\))/g;
 
-        return content
-            .replace(calc_regex, (_, group) => {
-                calc_functions.push(group);
-                return "__CALC__";
-            })
+        const { result, calc_functions } = replaceCalc(content);
+
+        return result
             .replace(comments, "$1")
             .replace(syntax, "$1$2$3$4$5$6$7$8")
             .replace(/__CALC__/g, () => `calc(${calc_functions.shift()})`)
