@@ -94,6 +94,13 @@ Default: `false`
 
 Always output a css bundle even if the css output is empty.
 
+### preserveImports
+
+Type: `boolean`
+Default: `true`
+
+When enabled, css imports will be retained in the bundle when preserveModules is enabled.
+
 ---
 
 ## Why

@@ -1,4 +1,4 @@
-import { Plugin, LoadHook, TransformHook } from "rollup";
+import { Plugin, ResolveIdHook, TransformHook } from "rollup";
 
 declare interface Options {
     include?: string | string[];
@@ -9,9 +9,10 @@ declare interface Options {
     modules?: boolean;
     inject?: boolean;
     alwaysOutput?: boolean;
+    preserveImports?: boolean;
 }
 
 export default function (options?: Options) : Plugin & {
-    load: LoadHook;
+    resolveId: ResolveIdHook;
     transform: TransformHook;
 }

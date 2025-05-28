@@ -5,7 +5,9 @@ export default (options = {}) => {
     if (!options.transform) options.transform = (code) => code;
 
     const styles = {};
+    const imports = {};
     const alwaysOutput = options.alwaysOutput ?? false;
+    const preserveImports = options.preserveImports ?? true;
     const filter = createFilter(options.include ?? ["**/*.css"], options.exclude ?? []);
 
     /* function to sort the css imports in order - credit to rollup-plugin-postcss */
@@ -53,6 +55,15 @@ export default (options = {}) => {
     return {
         name: "import-css",
 
+        resolveId(source, importer) {
+            if (source.endsWith(".css")) {
+                (imports[importer] = imports[importer] ?? []).push(source);
+                return { id: path.resolve(path.dirname(importer), source) };
+            }
+
+            return null;
+        },
+
         /* convert the css file to a module and save the code for a file output */
         async transform(code, id) {
             if (!filter(id)) return;
@@ -70,7 +81,7 @@ export default (options = {}) => {
             if (options.modules || attributes?.type == "css") {
                 return {
                     code: `const sheet = new CSSStyleSheet();sheet.replaceSync(${JSON.stringify(transformedCode)});export default sheet;`,
-                    map: { mappings: "" }
+                    map: null
                 };
             }
 
@@ -78,13 +89,13 @@ export default (options = {}) => {
             if (options.inject) {
                 return {
                     code: `document.head.appendChild(document.createElement("style")).textContent=${JSON.stringify(transformedCode)};`,
-                    map: { mappings: "" }
+                    map: null
                 };
             }
 
             return {
                 code: `export default ${JSON.stringify(transformedCode)};`,
-                map: { mappings: "" }
+                map: null
             };
         },
 
@@ -113,6 +124,17 @@ export default (options = {}) => {
                     if (styles[id].trim().length <= 0 && !alwaysOutput) continue;
 
                     this.emitFile({ type: "asset", fileName: fileName, source: styles[id] });
+                }
+
+                /* reinject the css import into the bundle based on the imports we have tracked */
+                if (preserveImports) {
+                    for (let chunk of Object.values(bundle)) {
+                        if (chunk.type != "chunk" || !imports[chunk.facadeModuleId]) continue;
+
+                        for (let file of imports[chunk.facadeModuleId].reverse()) {
+                            chunk.code = `import "${file}";\n${chunk.code}`;
+                        }
+                    }
                 }
 
                 return;
