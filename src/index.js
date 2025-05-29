@@ -56,7 +56,7 @@ export default (options = {}) => {
         name: "import-css",
 
         resolveId(source, importer) {
-            if (source.endsWith(".css")) {
+            if (source.endsWith(".css") && (source.startsWith(".") || source.startsWith("/"))) {
                 (imports[importer] = imports[importer] ?? []).push(source);
                 return { id: path.resolve(path.dirname(importer), source) };
             }
@@ -119,7 +119,8 @@ export default (options = {}) => {
                 for (let id of stylesheets) {
                     const relativeToEntry = path.dirname(path.relative(entryChunk, id));
                     const outputPath = opts.dir ? opts.dir : path.dirname(opts.file);
-                    const fileName = path.join(path.join(outputPath, relativeToEntry), path.basename(id));
+                    const relativePath = path.join(path.join(outputPath, relativeToEntry), path.basename(id));
+                    const fileName = relativePath.includes("node_modules") ? relativePath.split("/").at(-1) : relativePath;
 
                     if (styles[id].trim().length <= 0 && !alwaysOutput) continue;
 
@@ -132,7 +133,10 @@ export default (options = {}) => {
                         if (chunk.type != "chunk" || !imports[chunk.facadeModuleId]) continue;
 
                         for (let file of imports[chunk.facadeModuleId].reverse()) {
-                            chunk.code = `import "${file}";\n${chunk.code}`;
+                            const importPath = file.includes("node_modules") ? `./${file.split("/").at(-1)}` : file;
+                            if (chunk.code.includes(importPath)) continue;
+
+                            chunk.code = `import "${importPath}";\n${chunk.code}`;
                         }
                     }
                 }
