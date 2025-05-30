@@ -1,0 +1,22 @@
+.element {
+  box-shadow: 0px 16px 32px -10px rgba(17, 24, 38, 0.1);
+}
+
+.another-element {
+  background: red;
+}
+
+.test {
+  top: calc(var(--variable-name));
+  top: calc(var(--variable-name) + 10px);
+  top: calc((10px + var(--variable-name)) * 2);
+}
+
+:is(.a-very-long-class-name, .b-very-long-class-name, .c-very-long-class-name)
+  textarea {
+  margin: 0;
+}
+
+html[style*="--color-scheme: dark"] {
+  color: blue;
+}
