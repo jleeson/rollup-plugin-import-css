@@ -44,15 +44,15 @@
   "author": "Jacob Leeson <jleeson2000@gmail.com> (https://twitter.com/jleesons)",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "esbuild": "^0.25.5",
-    "eslint": "^9.27.0",
-    "globals": "^16.2.0",
-    "rollup": "^4.41.1",
+    "@eslint/js": "^9.32.0",
+    "esbuild": "^0.25.8",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
+    "rollup": "^4.46.2",
     "rollup-plugin-esbuild": "^6.2.1"
   },
   "dependencies": {
-    "@rollup/pluginutils": "^5.1.4"
+    "@rollup/pluginutils": "^5.2.0"
   },
   "peerDependencies": {
     "rollup": "^2.x.x || ^3.x.x || ^4.x.x"
