@@ -88,7 +88,7 @@ export default (options = {}) => {
             /* if inject is enabled, we want to simply inject the stylesheet into the document head */
             if (options.inject) {
                 return {
-                    code: `document.head.appendChild(document.createElement("style")).textContent=${JSON.stringify(transformedCode)};`,
+                    code: `if(typeof document!=='undefined')document.head.appendChild(document.createElement("style")).textContent=${JSON.stringify(transformedCode)};`,
                     map: null
                 };
             }
