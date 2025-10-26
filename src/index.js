@@ -146,6 +146,7 @@ export default (options = {}) => {
                 return;
             }
 
+            /* copy relative assets to the output directory and update the referenced path */
             if (copyRelativeAssets) {
                 for (let id of stylesheets) {
                     const assets = [...styles[id].matchAll(/url\(\s*(['"]?)(\.\/.*?)\1\s*\)/g)].map((match) => match[2]);
