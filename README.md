@@ -101,6 +101,13 @@ Default: `true`
 
 When enabled, css imports will be retained in the bundle when preserveModules is enabled.
 
+### copyRelativeAssets
+
+Type: `boolean`
+Default: `false`
+
+When enabled, relative assets that are referenced inside `url()` statements will be copied to the output folder and the referenced path will be updated.
+
 ---
 
 ## Why

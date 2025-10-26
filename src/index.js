@@ -1,5 +1,6 @@
 import { createFilter } from "@rollup/pluginutils";
 import path from "path";
+import fs from "fs";
 
 export default (options = {}) => {
     if (!options.transform) options.transform = (code) => code;
@@ -8,6 +9,7 @@ export default (options = {}) => {
     const imports = {};
     const alwaysOutput = options.alwaysOutput ?? false;
     const preserveImports = options.preserveImports ?? true;
+    const copyRelativeAssets = options.copyRelativeAssets ?? false;
     const filter = createFilter(options.include ?? ["**/*.css"], options.exclude ?? []);
 
     /* function to sort the css imports in order - credit to rollup-plugin-postcss */
@@ -144,8 +146,24 @@ export default (options = {}) => {
                 return;
             }
 
+            if (copyRelativeAssets) {
+                for (let id of stylesheets) {
+                    const assets = [...styles[id].matchAll(/url\(\s*(['"]?)(\.\/.*?)\1\s*\)/g)].map((match) => match[2]);
+
+                    for (let asset of assets) {
+                        const reference = this.emitFile({
+                            type: "asset",
+                            name: path.basename(asset),
+                            source: fs.readFileSync(path.resolve(path.dirname(id), asset))
+                        });
+
+                        styles[id] = styles[id].replace(asset, `./${this.getFileName(reference)}`);
+                    }
+                }
+            }
+
             /* merge all css files into a single stylesheet */
-            const css = stylesheets.map((id) => styles[id]).join("\n");
+            const css = stylesheets.map((id) => styles[id]).join(options.minify ? "" : "\n");
 
             if (css.trim().length <= 0 && !alwaysOutput) return;
 

@@ -10,6 +10,7 @@ declare interface Options {
     inject?: boolean;
     alwaysOutput?: boolean;
     preserveImports?: boolean;
+    copyRelativeAssets?: boolean;
 }
 
 export default function (options?: Options) : Plugin & {
