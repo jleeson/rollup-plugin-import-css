@@ -146,10 +146,13 @@ export default (options = {}) => {
                 return;
             }
 
+            /* create a copy of the styles object that we can modify to avoid caching problems in watch mode */
+            const stylesToEmit = Object.assign({}, styles);
+
             /* copy relative assets to the output directory and update the referenced path */
             if (copyRelativeAssets) {
                 for (let id of stylesheets) {
-                    const assets = [...styles[id].matchAll(/url\(\s*(['"]?)(\.\/.*?)\1\s*\)/g)].map((match) => match[2]);
+                    const assets = [...stylesToEmit[id].matchAll(/url\(\s*(['"]?)(\.\/.*?)\1\s*\)/g)].map((match) => match[2]);
 
                     for (let asset of assets) {
                         const reference = this.emitFile({
@@ -158,13 +161,13 @@ export default (options = {}) => {
                             source: fs.readFileSync(path.resolve(path.dirname(id), asset))
                         });
 
-                        styles[id] = styles[id].replace(asset, `./${this.getFileName(reference)}`);
+                        stylesToEmit[id] = styles[id].replace(asset, `./${this.getFileName(reference)}`);
                     }
                 }
             }
 
             /* merge all css files into a single stylesheet */
-            const css = stylesheets.map((id) => styles[id]).join(options.minify ? "" : "\n");
+            const css = stylesheets.map((id) => stylesToEmit[id]).join(options.minify ? "" : "\n");
 
             if (css.trim().length <= 0 && !alwaysOutput) return;
 
