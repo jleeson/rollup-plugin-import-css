@@ -32,6 +32,8 @@ const { dependencies } = JSON.parse(fs.readFileSync(new URL("../package.json", i
     assert.strictEqual(style.includes(`.bg-image-relative{background-image:url("./assets/background-updated.jpg");`), true, "relative asset paths should be updated.");
     assert.strictEqual(style.includes(`.bg-image-absolute{background-image:url("/assets/background.jpg");}`), true, "absolute asset paths should not be updated.");
     assert.strictEqual(fs.existsSync("test/dist/assets/background-updated.jpg"), true, "asset files should be copied to output folder");
+    assert.strictEqual(style.includes(`@theme inline{--radius-sm:calc(var(--radius) - 4px);@keyframes spinner{0%{opacity:1;}to{opacity:0.15;}}}`), true, "nested css should not disrupt minification.");
+    assert.strictEqual(style.includes(`/* this is a comment */`), false, "comments should be removed");
 
     fs.rmSync(path.resolve("test/dist/index.js"));
     fs.rmSync(path.resolve("test/dist/index.css"));
