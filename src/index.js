@@ -32,8 +32,12 @@ export default (options = {}) => {
 
     /* minify css */
     const minifyCSS = (css) => {
-        /* Step 1: Remove comments but preserve quoted strings */
-        return css.replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')|\/\*[^]*?\*\//g, (_, quoted) => quoted || "")
+        const functions = [];
+
+        /* collect function expressions and insert placeholders */
+        return css.replace(/\b(calc|min|max|clamp)\(([^()]*(\([^()]*\))*[^()]*)\)/g, (match) => { functions.push(match); return `___F${functions.length - 1}___`; })
+            /* Step 1: Remove comments but preserve quoted strings */
+            .replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')|\/\*[^]*?\*\//g, (_, quoted) => quoted || "")
             /* Step 2: Remove spaces around ; and } — keep the closing brace */
             .replace(/\s*;\s*(})/g, ";$1")
             /* Step 3: Remove spaces around meta characters and operators */
@@ -51,7 +55,9 @@ export default (options = {}) => {
             /* Step 9: Collapse multiple spaces into one */
             .replace(/(\s)\s+/g, "$1")
             /* Step 10: Replace newlines characters with a space. */
-            .replace(/\n+/g, " ");
+            .replace(/\n+/g, " ")
+            /* Step 11: Restore all function expressions */
+            .replace(/___F(\d+)___/g, (_, index) => functions[index]);
     };
 
     return {
