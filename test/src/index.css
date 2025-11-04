@@ -9,6 +9,7 @@
 .test {
   top: calc(var(--variable-name));
   top: calc(var(--variable-name) + 10px);
+  top: calc(var(--variable-name) - 10px);
   top: calc((10px + var(--variable-name)) * 2);
 }
 
