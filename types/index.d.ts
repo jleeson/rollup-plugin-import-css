@@ -1,6 +1,6 @@
 import { Plugin, ResolveIdHook, TransformHook } from "rollup";
 
-declare interface Options {
+export interface Options {
     include?: string | string[];
     exclude?: string | string[];
     output?: string;
@@ -13,7 +13,7 @@ declare interface Options {
     copyRelativeAssets?: boolean;
 }
 
-export default function (options?: Options) : Plugin & {
+export default function (options?: Options): Plugin & {
     resolveId: ResolveIdHook;
     transform: TransformHook;
 }

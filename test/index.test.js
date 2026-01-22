@@ -1,4 +1,4 @@
-import css from "../dist/plugin.js";
+import css from "../dist/index.js";
 import { rollup } from "rollup";
 import { builtinModules } from "module";
 import assert from "assert";
