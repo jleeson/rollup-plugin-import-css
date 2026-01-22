@@ -2,6 +2,9 @@ import { createFilter } from "@rollup/pluginutils";
 import path from "path";
 import fs from "fs";
 
+const INJECT_VIRTUAL_ID = "\0virtual:inject";
+const INJECT_UTIL = `export function __inject(css){if(typeof document != "undefined")document.head.appendChild(document.createElement("style")).textContent=css;}`;
+
 export default (options = {}) => {
     if (!options.transform) options.transform = (code) => code;
 
@@ -64,12 +67,19 @@ export default (options = {}) => {
         name: "import-css",
 
         resolveId(source, importer) {
+            if (source == INJECT_VIRTUAL_ID) return INJECT_VIRTUAL_ID;
+            
             if (source.endsWith(".css") && (source.startsWith(".") || source.startsWith("/"))) {
                 (imports[importer] = imports[importer] ?? []).push(source);
                 return { id: path.resolve(path.dirname(importer), source) };
             }
 
             return null;
+        },
+
+        /* load virtual modules for inline utilities */
+        load(id) {
+            if (id == INJECT_VIRTUAL_ID) return INJECT_UTIL;
         },
 
         /* convert the css file to a module and save the code for a file output */
@@ -96,7 +106,7 @@ export default (options = {}) => {
             /* if inject is enabled, we want to simply inject the stylesheet into the document head */
             if (options.inject) {
                 return {
-                    code: `if(typeof document!=="undefined")document.head.appendChild(document.createElement("style")).textContent=${JSON.stringify(transformedCode)};`,
+                    code: `import { __inject } from "${INJECT_VIRTUAL_ID}";__inject(${JSON.stringify(transformedCode)});`,
                     map: null
                 };
             }
