@@ -35,10 +35,42 @@ export default (options = {}) => {
 
     /* minify css */
     const minifyCSS = (css) => {
+        const function_regex = /^(calc|min|max|clamp)\(/;
         const functions = [];
 
+        const extractFunctions = (css, functions) => {
+            let result = "";
+            let i = 0;
+
+            while (i < css.length) {
+                const match = function_regex.exec(css.slice(i));
+
+                /* if no function was found, copy the character and continue */
+                if (!match) {
+                    result += css[i++];
+                    continue;
+                }
+
+                let j = i + match[0].length - 1;
+                let depth = 0;
+
+                /* walk through the string until we find the matching closing parenthesis */
+                for (; j < css.length; j++) {
+                    if (css[j] == "(") depth++;
+                    else if (css[j] == ")" && --depth == 0) break;
+                }
+
+                /* save the function to be injected later */
+                functions.push(css.slice(i, j + 1));
+                result += `___F${functions.length - 1}___`;
+                i = j + 1;
+            }
+
+            return result;
+        };
+
         /* collect function expressions and insert placeholders */
-        return css.replace(/\b(calc|min|max|clamp)\(([^()]*(\([^()]*\))*[^()]*)\)/g, (match) => { functions.push(match); return `___F${functions.length - 1}___`; })
+        return extractFunctions(css, functions)
             /* Step 1: Remove comments but preserve quoted strings */
             .replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')|\/\*[^]*?\*\//g, (_, quoted) => quoted || "")
             /* Step 2: Remove spaces around ; and } — keep the closing brace */
@@ -46,13 +78,13 @@ export default (options = {}) => {
             /* Step 3: Remove spaces around meta characters and operators */
             .replace(/\s*([*$~^|]?=|[{};,>~]|!important)\s*/g, "$1")
             /* Step 4: Remove spaces around + and - in selectors before { */
-            .replace(/\s*([+-])\s*(?=[^}]*\{)/g, "$1")
+            .replace(/(\S)\s*([+>~])\s*(\S)(?=[^{]*\{)/g, "$1$2$3")
             /* Step 5: Remove space after [, ( */
             .replace(/([[(])\s+/g, "$1")
             /* Step 6: Remove space before ], ) */
             .replace(/\s+([\])])/g, "$1")
             /* Step 7: Remove space around colon, only outside selectors */
-            .replace(/({[^}]*?)\s*:\s*/g, "$1:")
+            .replace(/({[^}]*)\s*:\s*/g, (match) => match.replace(/\s*:\s*/g, ":"))
             /* Step 8: Trim leading and trailing whitespace */
             .replace(/^\s+|\s+$/g, "")
             /* Step 9: Collapse multiple spaces into one */
@@ -68,7 +100,7 @@ export default (options = {}) => {
 
         resolveId(source, importer) {
             if (source == INJECT_VIRTUAL_ID) return INJECT_VIRTUAL_ID;
-            
+
             if (source.endsWith(".css") && (source.startsWith(".") || source.startsWith("/"))) {
                 (imports[importer] = imports[importer] ?? []).push(source);
                 return { id: path.resolve(path.dirname(importer), source) };
