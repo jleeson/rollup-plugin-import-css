@@ -39,3 +39,9 @@ html[style*="--color-scheme: dark"] {
     to { opacity: 0.15; }
   }
 }
+
+@property --property-name {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #c0ffee;
+}

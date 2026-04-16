@@ -26,7 +26,7 @@ const { dependencies } = JSON.parse(fs.readFileSync(new URL("../package.json", i
 
     assert.strictEqual(source.includes(`import "./index.css"`), false, "the css import should be removed.");
     assert.strictEqual(style.includes(`.element{box-shadow:0px 16px 32px -10px rgba(17,24,38,0.1);}`), true, "negative values should be minified correctly.");
-    assert.strictEqual(style.includes(`.test{top:calc(var(--variable-name));top: calc(var(--variable-name) + 10px);top: calc(var(--variable-name) - 10px);top: calc((10px + var(--variable-name)) * 2);}`), true, "nested parentheses should be minfied correctly.");
+    assert.strictEqual(style.includes(`.test{top:calc(var(--variable-name));top:calc(var(--variable-name) + 10px);top:calc(var(--variable-name) - 10px);top:calc((10px + var(--variable-name)) * 2);}`), true, "nested parentheses should be minfied correctly.");
     assert.strictEqual(style.includes(`:is(.a-very-long-class-name,.b-very-long-class-name,.c-very-long-class-name) textarea{margin:0;}`), true, "new lines should be minified correctly.");
     assert.strictEqual(style.includes(`html[style*="--color-scheme: dark"]{color:blue;}`), true, "spaces should be preserved in css selectors.");
     assert.strictEqual(style.includes(`.bg-image-relative{background-image:url("./assets/background-updated.jpg");`), true, "relative asset paths should be updated.");
@@ -34,6 +34,7 @@ const { dependencies } = JSON.parse(fs.readFileSync(new URL("../package.json", i
     assert.strictEqual(fs.existsSync("test/dist/assets/background-updated.jpg"), true, "asset files should be copied to output folder");
     assert.strictEqual(style.includes(`@theme inline{--radius-sm:calc(var(--radius) - 4px);@keyframes spinner{0%{opacity:1;}to{opacity:0.15;}}}`), true, "nested css should not disrupt minification.");
     assert.strictEqual(style.includes(`/* this is a comment */`), false, "comments should be removed");
+    assert.strictEqual(style.includes(`@property --property-name{syntax:"<color>";inherits:false;initial-value:#c0ffee;}`), true, "css variables should return spaces in selectors.");
 
     fs.rmSync(path.resolve("test/dist/index.js"));
     fs.rmSync(path.resolve("test/dist/index.css"));
